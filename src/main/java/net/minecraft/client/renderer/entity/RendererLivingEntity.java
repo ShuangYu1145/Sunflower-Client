@@ -107,6 +107,10 @@ public abstract class RendererLivingEntity<T extends EntityLivingBase> extends R
                 entity.limbSwingAmount = 1.0F;
             }
 
+//            if (Nove.instance.moduleManager.getModule(MoBendsMod.class).onRenderLivingEvent(this, entity, x, y, z, entityYaw, partialTicks)) {
+//                return;
+//            }
+
             GlStateManager.pushMatrix();
             GlStateManager.disableCull();
             this.mainModel.swingProgress = this.getSwingProgress(entity, partialTicks);
@@ -152,7 +156,13 @@ public abstract class RendererLivingEntity<T extends EntityLivingBase> extends R
                     f2 = f1 - f;
                 }
 
-                float f7 = entity.prevRotationPitch + (entity.rotationPitch - entity.prevRotationPitch) * partialTicks;
+                float f7;
+                if (entity == Minecraft.getMinecraft().thePlayer) {
+                    f7 = entity.prevRotationPitchHead + (entity.rotationPitchHead - entity.prevRotationPitchHead) * partialTicks;
+                }
+                else {
+                    f7 = entity.prevRotationPitch + (entity.rotationPitch - entity.prevRotationPitch) * partialTicks;
+                }
                 this.renderLivingAt(entity, x, y, z);
                 float f8 = this.handleRotationFloat(entity, partialTicks);
                 this.rotateCorpse(entity, f8, f, partialTicks);
@@ -540,7 +550,7 @@ public abstract class RendererLivingEntity<T extends EntityLivingBase> extends R
         return (float)livingBase.ticksExisted + partialTicks;
     }
 
-    protected void renderLayers(T entitylivingbaseIn, float p_177093_2_, float p_177093_3_, float partialTicks, float p_177093_5_, float p_177093_6_, float p_177093_7_, float p_177093_8_)
+    public void renderLayers(T entitylivingbaseIn, float p_177093_2_, float p_177093_3_, float partialTicks, float p_177093_5_, float p_177093_6_, float p_177093_7_, float p_177093_8_)
     {
         for (LayerRenderer<T> layerrenderer : this.layerRenderers)
         {

@@ -74,18 +74,12 @@ public class ContainerPlayer extends Container
     public void onContainerClosed(EntityPlayer playerIn)
     {
         super.onContainerClosed(playerIn);
-
-        for (int i = 0; i < 4; ++i)
-        {
+        for (int i = 0; i < 4; ++i) {
             ItemStack itemstack = this.craftMatrix.removeStackFromSlot(i);
-
-            if (itemstack != null)
-            {
-                playerIn.dropPlayerItemWithRandomChoice(itemstack, false);
-            }
+            if (itemstack == null) continue;
+            playerIn.dropPlayerItemWithRandomChoice(itemstack, false);
         }
-
-        this.craftResult.setInventorySlotContents(0, (ItemStack)null);
+        this.craftResult.setInventorySlotContents(0, null);
     }
 
     public boolean canInteractWith(EntityPlayer playerIn)

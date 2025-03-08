@@ -4,6 +4,7 @@ import com.google.common.collect.Maps;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.mojang.authlib.GameProfile;
+import com.viaversion.viaversion.api.protocol.version.ProtocolVersion;
 import io.netty.buffer.Unpooled;
 import java.io.File;
 import java.io.IOException;
@@ -209,6 +210,7 @@ import net.minecraft.world.WorldProviderSurface;
 import net.minecraft.world.WorldSettings;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.storage.MapData;
+import net.vialoadingbase.ViaLoadingBase;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -744,16 +746,14 @@ public class NetHandlerPlayClient implements INetHandlerPlayClient
         }
     }
 
-    public void handleChat(S02PacketChat packetIn)
-    {
+    @Override
+    public void handleChat(S02PacketChat packetIn) {
         PacketThreadUtil.checkThreadAndEnqueue(packetIn, this, this.gameController);
 
         if (packetIn.getType() == 2)
         {
             this.gameController.ingameGUI.setRecordPlaying(packetIn.getChatComponent(), false);
-        }
-        else
-        {
+        } else {
             this.gameController.ingameGUI.getChatGUI().printChatMessage(packetIn.getChatComponent());
         }
     }
@@ -1040,6 +1040,10 @@ public class NetHandlerPlayClient implements INetHandlerPlayClient
     public void handleConfirmTransaction(S32PacketConfirmTransaction packetIn)
     {
         PacketThreadUtil.checkThreadAndEnqueue(packetIn, this, this.gameController);
+        if (ViaLoadingBase.getInstance().getTargetVersion().isNewerThanOrEqualTo(ProtocolVersion.v1_17)) {
+            this.addToSendQueue(new C0FPacketConfirmTransaction(packetIn.getWindowId(), (short) 0, false));
+            return;
+        }
         Container container = null;
         EntityPlayer entityplayer = this.gameController.thePlayer;
 

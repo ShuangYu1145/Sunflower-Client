@@ -1,6 +1,5 @@
 package net.minecraft.block;
 
-import java.util.List;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
@@ -11,6 +10,9 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
+import net.vialoadingbase.ViaLoadingBase;
+
+import java.util.List;
 
 public class BlockLilyPad extends BlockBush
 {
@@ -22,6 +24,9 @@ public class BlockLilyPad extends BlockBush
         this.setCreativeTab(CreativeTabs.tabDecorations);
     }
 
+    /**
+     * Add all collision boxes of this Block to the list that intersect with the given mask.
+     */
     public void addCollisionBoxesToList(World worldIn, BlockPos pos, IBlockState state, AxisAlignedBB mask, List<AxisAlignedBB> list, Entity collidingEntity)
     {
         if (collidingEntity == null || !(collidingEntity instanceof EntityBoat))
@@ -30,9 +35,12 @@ public class BlockLilyPad extends BlockBush
         }
     }
 
-    public AxisAlignedBB getCollisionBoundingBox(World worldIn, BlockPos pos, IBlockState state)
-    {
-        return new AxisAlignedBB((double)pos.getX() + this.minX, (double)pos.getY() + this.minY, (double)pos.getZ() + this.minZ, (double)pos.getX() + this.maxX, (double)pos.getY() + this.maxY, (double)pos.getZ() + this.maxZ);
+    public AxisAlignedBB getCollisionBoundingBox(final World worldIn, final BlockPos pos, final IBlockState state) {
+        if (ViaLoadingBase.getInstance().getTargetVersion().getVersion() <= 47) {
+            return new AxisAlignedBB((double) pos.getX() + this.minX, (double) pos.getY() + this.minY, (double) pos.getZ() + this.minZ, (double) pos.getX() + this.maxX, (double) pos.getY() + this.maxY, (double) pos.getZ() + this.maxZ);
+        } else {
+            return new AxisAlignedBB((double) pos.getX() + 0.0625D, (double) pos.getY(), (double) pos.getZ() + 0.0625D, (double) pos.getX() + 0.9375D, (double) pos.getY() + 0.09375D, (double) pos.getZ() + 0.9375D);
+        }
     }
 
     public int getBlockColor()
@@ -50,6 +58,9 @@ public class BlockLilyPad extends BlockBush
         return 2129968;
     }
 
+    /**
+     * is the block grass, dirt or farmland
+     */
     protected boolean canPlaceBlockOn(Block ground)
     {
         return ground == Blocks.water;
@@ -68,6 +79,9 @@ public class BlockLilyPad extends BlockBush
         }
     }
 
+    /**
+     * Convert the BlockState into the correct metadata value
+     */
     public int getMetaFromState(IBlockState state)
     {
         return 0;

@@ -46,6 +46,7 @@ import net.minecraft.util.Vec3;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
+import net.vialoadingbase.ViaLoadingBase;
 
 public abstract class Entity implements ICommandSender
 {
@@ -71,6 +72,8 @@ public abstract class Entity implements ICommandSender
     public float rotationPitch;
     public float prevRotationYaw;
     public float prevRotationPitch;
+    public float rotationPitchHead;
+    public float prevRotationPitchHead;
     private AxisAlignedBB boundingBox;
     public boolean onGround;
     public boolean isCollidedHorizontally;
@@ -1704,7 +1707,7 @@ public abstract class Entity implements ICommandSender
 
     public float getCollisionBorderSize()
     {
-        return 0.1F;
+        return ViaLoadingBase.getInstance().getTargetVersion().getVersion() <= 47 ? 0.1F : 0.0F;
     }
 
     public Vec3 getLookVec()

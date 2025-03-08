@@ -50,6 +50,7 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
+import net.vialoadingbase.ViaLoadingBase;
 
 public abstract class EntityLivingBase extends Entity
 {
@@ -182,6 +183,7 @@ public abstract class EntityLivingBase extends Entity
 
     public void onEntityUpdate()
     {
+        this.prevRotationPitchHead = this.rotationPitchHead;
         this.prevSwingProgress = this.swingProgress;
         super.onEntityUpdate();
         this.worldObj.theProfiler.startSection("livingEntityBaseTick");
@@ -1317,7 +1319,7 @@ public abstract class EntityLivingBase extends Entity
         return false;
     }
 
-    protected float getJumpUpwardsMotion()
+    public float getJumpUpwardsMotion()
     {
         return 0.42F;
     }
@@ -1707,18 +1709,17 @@ public abstract class EntityLivingBase extends Entity
             this.motionZ *= 0.98D;
         }
 
-        if (Math.abs(this.motionX) < 0.005D)
-        {
+        double minMotion = ViaLoadingBase.getInstance().getTargetVersion().getVersion() <= 47 ? 0.005D : 0.003D;
+
+        if (Math.abs(this.motionX) < minMotion) {
             this.motionX = 0.0D;
         }
 
-        if (Math.abs(this.motionY) < 0.005D)
-        {
+        if (Math.abs(this.motionY) < minMotion) {
             this.motionY = 0.0D;
         }
 
-        if (Math.abs(this.motionZ) < 0.005D)
-        {
+        if (Math.abs(this.motionZ) < minMotion) {
             this.motionZ = 0.0D;
         }
 

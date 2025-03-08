@@ -1,9 +1,12 @@
 package net.minecraft.network.play.server;
 
 import java.io.IOException;
+
+import com.viaversion.viaversion.api.protocol.version.ProtocolVersion;
 import net.minecraft.network.Packet;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.network.play.INetHandlerPlayClient;
+import net.vialoadingbase.ViaLoadingBase;
 
 public class S32PacketConfirmTransaction implements Packet<INetHandlerPlayClient>
 {
@@ -22,18 +25,30 @@ public class S32PacketConfirmTransaction implements Packet<INetHandlerPlayClient
         this.field_148893_c = p_i45182_3_;
     }
 
+    /**
+     * Passes this Packet on to the NetHandler for processing.
+     */
     public void processPacket(INetHandlerPlayClient handler)
     {
         handler.handleConfirmTransaction(this);
     }
 
-    public void readPacketData(PacketBuffer buf) throws IOException
-    {
-        this.windowId = buf.readUnsignedByte();
-        this.actionNumber = buf.readShort();
-        this.field_148893_c = buf.readBoolean();
+    /**
+     * Reads the raw packet data from the data stream.
+     */
+    public void readPacketData(PacketBuffer buf) {
+        if (ViaLoadingBase.getInstance().getTargetVersion().isNewerThanOrEqualTo(ProtocolVersion.v1_17))
+            this.windowId = buf.readInt();
+        else {
+            this.windowId = buf.readUnsignedByte();
+            this.actionNumber = buf.readShort();
+            this.field_148893_c = buf.readBoolean();
+        }
     }
 
+    /**
+     * Writes the raw packet data to the data stream.
+     */
     public void writePacketData(PacketBuffer buf) throws IOException
     {
         buf.writeByte(this.windowId);

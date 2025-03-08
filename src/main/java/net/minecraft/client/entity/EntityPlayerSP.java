@@ -51,6 +51,7 @@ import net.minecraft.util.MovementInput;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.IInteractionObject;
 import net.minecraft.world.World;
+import net.vialoadingbase.ViaLoadingBase;
 
 public class EntityPlayerSP extends AbstractClientPlayer
 {
@@ -169,6 +170,10 @@ public class EntityPlayerSP extends AbstractClientPlayer
             boolean flag2 = d0 * d0 + d1 * d1 + d2 * d2 > 9.0E-4D || this.positionUpdateTicks >= 20;
             boolean flag3 = d3 != 0.0D || d4 != 0.0D;
 
+            if (ViaLoadingBase.getInstance().getTargetVersion().getVersion() > 47) {
+                ++this.positionUpdateTicks;
+            }
+
             if (this.ridingEntity == null)
             {
                 if (flag2 && flag3)
@@ -194,7 +199,9 @@ public class EntityPlayerSP extends AbstractClientPlayer
                 flag2 = false;
             }
 
-            ++this.positionUpdateTicks;
+            if (ViaLoadingBase.getInstance().getTargetVersion().getVersion() <= 47) {
+                ++this.positionUpdateTicks;
+            }
 
             if (flag2)
             {
@@ -483,36 +490,23 @@ public class EntityPlayerSP extends AbstractClientPlayer
         }
     }
 
-    public void displayGUIChest(IInventory chestInventory)
-    {
-        String s = chestInventory instanceof IInteractionObject ? ((IInteractionObject)chestInventory).getGuiID() : "minecraft:container";
-
-        if ("minecraft:chest".equals(s))
-        {
+    @Override
+    public void displayGUIChest(IInventory chestInventory) {
+        String s2;
+        String string = s2 = chestInventory instanceof IInteractionObject ? ((IInteractionObject)((Object)chestInventory)).getGuiID() : "minecraft:container";
+        if ("minecraft:chest".equals(s2)) {
             this.mc.displayGuiScreen(new GuiChest(this.inventory, chestInventory));
-        }
-        else if ("minecraft:hopper".equals(s))
-        {
+        } else if ("minecraft:hopper".equals(s2)) {
             this.mc.displayGuiScreen(new GuiHopper(this.inventory, chestInventory));
-        }
-        else if ("minecraft:furnace".equals(s))
-        {
+        } else if ("minecraft:furnace".equals(s2)) {
             this.mc.displayGuiScreen(new GuiFurnace(this.inventory, chestInventory));
-        }
-        else if ("minecraft:brewing_stand".equals(s))
-        {
+        } else if ("minecraft:brewing_stand".equals(s2)) {
             this.mc.displayGuiScreen(new GuiBrewingStand(this.inventory, chestInventory));
-        }
-        else if ("minecraft:beacon".equals(s))
-        {
+        } else if ("minecraft:beacon".equals(s2)) {
             this.mc.displayGuiScreen(new GuiBeacon(this.inventory, chestInventory));
-        }
-        else if (!"minecraft:dispenser".equals(s) && !"minecraft:dropper".equals(s))
-        {
+        } else if (!"minecraft:dispenser".equals(s2) && !"minecraft:dropper".equals(s2)) {
             this.mc.displayGuiScreen(new GuiChest(this.inventory, chestInventory));
-        }
-        else
-        {
+        } else {
             this.mc.displayGuiScreen(new GuiDispenser(this.inventory, chestInventory));
         }
     }
@@ -561,19 +555,18 @@ public class EntityPlayerSP extends AbstractClientPlayer
         return flag && !this.sleeping;
     }
 
-    public void updateEntityActionState()
-    {
+    @Override
+    public void updateEntityActionState() {
         super.updateEntityActionState();
-
-        if (this.isCurrentViewEntity())
-        {
+        if (this.isCurrentViewEntity()) {
             this.moveStrafing = this.movementInput.moveStrafe;
             this.moveForward = this.movementInput.moveForward;
             this.isJumping = this.movementInput.jump;
             this.prevRenderArmYaw = this.renderArmYaw;
             this.prevRenderArmPitch = this.renderArmPitch;
-            this.renderArmPitch = (float)((double)this.renderArmPitch + (double)(this.rotationPitch - this.renderArmPitch) * 0.5D);
-            this.renderArmYaw = (float)((double)this.renderArmYaw + (double)(this.rotationYaw - this.renderArmYaw) * 0.5D);
+            this.renderArmPitch = (float)((double)this.renderArmPitch + (double)(this.rotationPitch - this.renderArmPitch) * 0.5);
+            this.renderArmYaw = (float)((double)this.renderArmYaw + (double)(this.rotationYaw - this.renderArmYaw) * 0.5);
+            this.rotationPitchHead = this.rotationPitch;
         }
     }
 
